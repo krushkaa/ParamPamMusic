@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class WelcomeController {
 
-    @GetMapping("/welcomePage")
+    @GetMapping("/")
     public String home() {
         return "welcomePage";
     }
@@ -16,15 +16,15 @@ public class WelcomeController {
         return "main";
     }
 
-    @GetMapping("/login")
-    public String login() {
-        return "/loginForm";
-    }
+//    @GetMapping("/login")
+//    public String login() {
+//        return "/loginForm";
+//    }
 
-    @GetMapping("/registration")
-    public String registration() {
-        return "/registration";
-    }
+//    @GetMapping("/registration")
+//    public String registration() {
+//        return "/registration";
+//    }
 }
 
 

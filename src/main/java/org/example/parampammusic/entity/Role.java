@@ -3,9 +3,6 @@ package org.example.parampammusic.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,9 +15,6 @@ public class Role {
 
     @Column(name = "role_name", nullable = false, unique = true)
     private String roleName;
-
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<User> user = new ArrayList<>();
 
     public Role(String roleName) {
         this.roleName = roleName;

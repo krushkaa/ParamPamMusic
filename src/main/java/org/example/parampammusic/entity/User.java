@@ -34,6 +34,7 @@ public class User {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -58,15 +59,5 @@ public class User {
                 ", bonusPoints=" + bonusPoint +
                 ", role=" + role +
                 '}';
-    }
-
-    public User(int user_id, String username, String password, String email, String telNumber, int bonusPoints, Role role) {
-        this.id = user_id;
-        this.login = username;
-        this.password = password;
-        this.email = email;
-        this.telNumber = telNumber;
-        this.bonusPoint = bonusPoints;
-        this.role = role;
     }
 }

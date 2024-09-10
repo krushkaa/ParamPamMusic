@@ -1,28 +1,28 @@
 package org.example.parampammusic.controller;
 
-import org.example.parampammusic.DTO.UserDTO;
-import org.example.parampammusic.entity.Role;
 import org.example.parampammusic.entity.User;
 import org.example.parampammusic.service.RoleService;
-import org.example.parampammusic.util.UserService;
+import org.example.parampammusic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class RegistrationController {
 
-    private final UserService userService;
     private final RoleService roleService;
+    private final UserService userService;
 
     @Autowired
-    public RegistrationController(UserService userService, RoleService roleService) {
-        this.userService = userService;
+    public RegistrationController(UserService getUserServiceImpl, RoleService roleService) {
+        this.userService = getUserServiceImpl;
         this.roleService = roleService;
     }
 
-    @PostMapping("/registrationForm")
+    @GetMapping("/registrationForm")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
         model.addAttribute("roles", roleService.getAllRoles());
@@ -31,13 +31,10 @@ public class RegistrationController {
 
     @PostMapping("/registration")
     public String registerUser(@ModelAttribute("user") User user, Model model) {
-        Role role = roleService.getRoleByRoleName("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("Role not found"));
-        user.setRole(role);
-        userService.createUser(new UserDTO());
-
+        String rawPassword = user.getPassword();
+        userService.createUser(user, rawPassword);
         model.addAttribute("successMessage", "Registration successful!");
-        return "loginForm";  // После регистрации перенаправляем на страницу логина
+        return "registrationSuccess";
     }
 }
 
