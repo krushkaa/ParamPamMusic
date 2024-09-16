@@ -1,5 +1,6 @@
 package org.example.parampammusic.service;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.parampammusic.entity.Role;
 import org.example.parampammusic.entity.User;
@@ -36,9 +37,13 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public boolean authenticate(String login, String rawPassword) {
+    public boolean authenticate(String login, String rawPassword, HttpSession session) {
         User user = userRepository.findByLogin(login);
-        return user != null && passwordEncoder.matches(rawPassword, user.getPassword());
+        if (user != null && passwordEncoder.matches(rawPassword, user.getPassword())) {
+            session.setAttribute("login", user.getLogin());
+            return true;
+        }
+        return true;
     }
 
     @Override
@@ -53,35 +58,4 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("Cannot find user with login=" + login);
         }
     }
-
-//    public User updateUser(User user) {
-//        User user = userRepository.findByLogin(user.getLogin());
-//        if (user != null) {
-//            user.setEmail(user.getEmail());
-//            user.setTelNumber(user.getTelNumber());
-//            user.setBonusPoint(user.getBonusPoint());
-//
-//            return userRepository.save(user);
-//        } else {
-//            return null;
-//        }
-//    }
-//
-//    public void deleteUser(int userId) {
-//        Optional<User> userOptional = userRepository.findById(userId);
-//        if (userOptional.isPresent()) {
-//            User user = userOptional.get();
-//            userRepository.delete(user);
-//        } else {
-//            System.out.println("User not found");
-//        }
-//    }
-//    @GetMapping("/users")
-//    public List<User> getAllUsers() {
-//        return userRepository.findAll();
-//    }
-//
-//    public User getUserByLogin(String login) {
-//        return userRepository.findByLogin(login);
-//    }
 }

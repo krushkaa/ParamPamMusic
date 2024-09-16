@@ -1,5 +1,7 @@
 package org.example.parampammusic.controller;
 
+import jakarta.servlet.http.HttpSession;
+import org.example.parampammusic.entity.User;
 import org.example.parampammusic.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,9 +29,11 @@ public class LoginFormController {
         return "loginError";
     }
     @PostMapping("/loginForm")
-    public String login(@RequestParam String login, @RequestParam String rawPassword, Model model) {
-        if (userService.authenticate(login, rawPassword)) {
-            return "main";
+    public String login(@RequestParam String login, @RequestParam String rawPassword, HttpSession session, Model model) {
+        if (userService.authenticate(login, rawPassword, session)) {
+            User user = (User) userService.loadUserByUsername(login);
+            session.setAttribute("username", user.getLogin());
+            return "redirect:main";
         } else {
             model.addAttribute("error", "Неправильный логин или пароль");
             return "loginError";

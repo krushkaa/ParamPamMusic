@@ -2,12 +2,103 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Main Interface</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Main Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('/static/img/music.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border: 2px solid black;
+            background-color: lightblue;
+        }
+
+        .logo {
+            font-size: 30px;
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        .actions {
+            font-size: 25px;
+        }
+
+        /*.actions a {*/
+        /*    text-decoration: darkgoldenrod;*/
+        /*    color: black;*/
+        /*}*/
+        .center {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            padding: 30px;
+            text-align: center;
+            /*border: 2px solid black;*/
+            /*background-color: lightyellow;*/
+        }
+
+        .center div {
+            padding: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            border: 3px solid #124115;
+            background-color: rgba(12, 108, 71, 0.95);
+        }
+
+        #myTracksButton {
+            grid-column: span 3;
+        }
+
+        .center img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            border: 2px solid black;
+            background-color: lightgray;
+        }
+    </style>
 </head>
+
 <body>
-<div class="container">
-    <h1>Выберите трек</h1>
+<div class="header">
+    <div class="logo">
+        ParamPam Music
+    </div>
+    <div class="actions">
+        <a th:href="@{/cart}">Корзина</a> | <a th:href="@{/profile}">Профиль</a> | <a th:href="@{/logout}">Выйти</a>
+    </div>
+</div>
+
+<div class="center">
+    <div th:href="@{/album}" onclick="window.location.href='/album'">
+        <img src="/static/img/vinyl.jpg" alt="Albums Image"><br>Список альбомов
+    </div>
+    <div th:href="@{/track}" onclick="window.location.href='/track'">
+        <img src="/static/img/track.jpg" alt="Tracks Image"><br>Список треков
+    </div>
+    <div th:href="@{/artist}" onclick="window.location.href='/artist'">
+        <img src="/static/img/artist.jfif" alt="Artists Image"><br>Список артистов
+    </div>
+    <div id="myTracksButton" th:href="@{/myTrack}" onclick="window.location.href='/myTrack'">
+        <img src="/static/img/my_track.jpg" alt="My Tracks Image"><br>Мои треки
+    </div>
+</div>
+
+<div class="footer">
+    Контакты: Иваныч, +375(29)123-45-67, example@mail.ru
 </div>
 </body>
 </html>

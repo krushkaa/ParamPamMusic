@@ -21,6 +21,14 @@ public class AudioTrack {
     @Column(name = "title", nullable = false)
     private String title;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Artist artist;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Genre genre;
+
     @ManyToOne
     @JoinColumn(name = "album_id", nullable = false)
     private Album album;

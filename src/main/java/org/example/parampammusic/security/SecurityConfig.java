@@ -23,8 +23,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasRole("USER")
-                        .requestMatchers("/", "/registration", "/registrationForm","/custom-login", "/logout").permitAll()
-                        .requestMatchers("/resources/**","/img/**").permitAll()
+                        .requestMatchers("/", "/registration", "/registrationForm","/custom-login", "/logout", "/album", "/track").permitAll()
+                        .requestMatchers("/resources/**","/img/**","/css/**").permitAll()
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                         .requestMatchers("/main").authenticated()
                 )
@@ -32,7 +32,7 @@ public class SecurityConfig {
                         .loginPage("/custom-login")
                         .loginProcessingUrl("/loginForm")
                         .usernameParameter("login")
-                        .passwordParameter("rawPassword")
+                        .passwordParameter("password")
                         .defaultSuccessUrl("/main", true)
                         .failureUrl("/loginError")
                         .permitAll()
@@ -41,6 +41,10 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
                         .permitAll()
+                )
+                .sessionManagement(session -> session
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(true)
                 );
 
         return httpSecurity.build();

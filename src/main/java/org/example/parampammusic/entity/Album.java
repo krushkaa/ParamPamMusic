@@ -29,7 +29,7 @@ public class Album {
     private LocalDate releaseDate;
 
     @OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AudioTrack> audioTracks = new ArrayList<>();
+    private List<AudioTrack> audioTrack = new ArrayList<>();
 }
 
 

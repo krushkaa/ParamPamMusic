@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AudioTrack</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/img/music.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border: 2px solid black;
+            background-color: lightblue;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 30px;
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        .actions {
+            font-size: 25px;
+        }
+        .center div {
+            padding: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            border: 3px solid rgba(25, 148, 176, 0.95);
+            background-color: rgb(43, 210, 184);
+        }
+
+        .center img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            border: 2px solid black;
+            background-color: lightgray;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+<div class="header">
+    <div class="logo">
+        ParamPam Music
+    </div>
+    <div class="actions">
+        <a th:href="@{/cart}">Корзина</a> | <a th:href="@{/profile}">Профиль</a> | <a th:href="@{/logout}">Выйти</a>
+    </div>
+</div>
+
+<div class="center">
+    <h2 style="color: white">Список аудиотреков</h2>
+    <div id="audioTrackList">
+        <div th:each="audioTrack : ${audioTrack}">
+            <p th:text="${audioTrack.title}"></p>
+            <p th:text="${audioTrack.artist_id}"></p>
+            <p th:text="${audioTrack.genre_id}"></p>
+            <p th:text="${audioTrack.album_id}"></p>
+            <p th:text="${audioTrack.price}"></p>
+            <form th:action="@{/updateAudioTrack/{id}(id=${audioTrack.id})}" method="post">
+                <button type="submit">Редактировать</button>
+            </form>
+            <form th:action="@{/deleteAudioTrack/{id}(id=${audioTrack.id})}" method="post">
+                <button type="submit">Удалить</button>
+            </form>
+        </div>
+    </div>
+
+    <form action="/addTrack" method="post">
+        <label>
+            <input type="text" name="title" placeholder="Название аудиотрека">
+        </label>
+        <label>
+            <input type="text" name="album_id" placeholder="Альбом">
+        </label>
+        <label>
+            <input type="text" name="price" placeholder="Цена">
+        </label>
+        <label>
+            <input type="text" name="artist_id" placeholder="Артист">
+        </label>
+        <label>
+            <input type="text" name="genre_id" placeholder="Жанр">
+        </label>
+        <button type="submit">Добавить новый трек</button>
+    </form>
+</div>
+
+<div class="footer">
+    Контакты: Иваныч, +375(29)123-45-67, example@mail.ru
+</div>
+</body>
+</html>

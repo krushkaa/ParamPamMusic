@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Error</title>
+</head>
+<body>
+<h1>Login Error</h1>
+<p th:if="${error}" class="error-message">Неправильный логин или пароль. Пожалуйста, попробуйте снова.</p>
+<a href="/custom-login" class="btn btn-primary btn-lg">Войти</a>
+</body>
+</html>
