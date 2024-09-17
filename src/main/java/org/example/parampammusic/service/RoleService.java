@@ -13,7 +13,6 @@ public class RoleService {
 
     private final RoleRepository roleRepository;
 
-    @Autowired
     public RoleService(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
@@ -23,8 +22,8 @@ public class RoleService {
         return roleRepository.save(role);
     }
 
-    public Optional<Role> getRoleByRoleName(String roleName) {
-        return roleRepository.findByRoleName(roleName);
+    public Optional<Role> getRoleById(int roleId) {
+        return roleRepository.findById(roleId);
     }
 
     public List<Role> getAllRoles() {

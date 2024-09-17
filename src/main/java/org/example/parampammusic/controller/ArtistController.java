@@ -3,7 +3,6 @@ package org.example.parampammusic.controller;
 import org.example.parampammusic.entity.Artist;
 import org.example.parampammusic.service.ArtistService;
 import org.example.parampammusic.util.AdminValidator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +16,6 @@ public class ArtistController {
     private final ArtistService artistService;
     private final AdminValidator adminValidator;
 
-    @Autowired
     public ArtistController(ArtistService artistService, AdminValidator adminValidator) {
         this.artistService = artistService;
         this.adminValidator = adminValidator;

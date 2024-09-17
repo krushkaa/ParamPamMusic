@@ -3,11 +3,13 @@ package org.example.parampammusic.controller;
 import org.example.parampammusic.entity.AudioTrack;
 import org.example.parampammusic.service.AudioTrackService;
 import org.example.parampammusic.util.AdminValidator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -17,7 +19,6 @@ public class AudioTrackController {
     private final AudioTrackService audioTrackService;
     private final AdminValidator adminValidator;
 
-    @Autowired
     public AudioTrackController(AudioTrackService audioTrackService, AdminValidator adminValidator) {
         this.audioTrackService = audioTrackService;
         this.adminValidator = adminValidator;

@@ -13,7 +13,6 @@ public class AudioTrackService {
 
     private final AudioTrackRepository audioTrackRepository;
 
-    @Autowired
     public AudioTrackService(AudioTrackRepository audioTrackRepository) {
         this.audioTrackRepository = audioTrackRepository;
     }

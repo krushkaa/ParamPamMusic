@@ -21,17 +21,20 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
 
-    @Autowired
     private UserRepository userRepository;
-    @Autowired
     private RoleService roleService;
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public void createUser(User user, String rawPassword) {
+    public UserService(UserRepository userRepository, RoleService roleService, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public void createUser(User user, String rawPassword, int roleId) {
         String encodedPassword = passwordEncoder.encode(rawPassword);
         user.setPassword(encodedPassword);
-        Role role = roleService.getRoleByRoleName("ROLE_USER")
+        Role role = roleService.getRoleById(roleId)
                 .orElseThrow(() -> new RuntimeException("Role not found"));
         user.setRole(role);
         userRepository.save(user);
