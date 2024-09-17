@@ -2,6 +2,7 @@ package org.example.parampammusic.controller;
 
 import org.example.parampammusic.entity.Album;
 import org.example.parampammusic.service.AlbumService;
+import org.example.parampammusic.util.AdminValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -14,10 +15,12 @@ import java.util.List;
 public class AlbumController {
 
     private final AlbumService albumService;
+    private final AdminValidator adminValidator;
 
     @Autowired
-    public AlbumController(AlbumService albumService) {
+    public AlbumController(AlbumService albumService, AdminValidator adminValidator) {
         this.albumService = albumService;
+        this.adminValidator = adminValidator;
     }
 
     @GetMapping("/album")
@@ -28,7 +31,8 @@ public class AlbumController {
     }
 
     @PostMapping("/addAlbum")
-    public String addAlbum(@ModelAttribute Album album) {
+    public String addAlbum(@ModelAttribute Album album, Authentication authentication) {
+        adminValidator.validateAdmin(authentication);
         albumService.addAlbum(album);
         return "redirect:/album";
     }
@@ -36,12 +40,14 @@ public class AlbumController {
     @PostMapping("/updateAlbum/{id}")
     public String updateAlbum(@PathVariable("id") int albumId, Authentication authentication) {
         Album album = albumService.getAlbumById(albumId);
-        albumService.updateAlbum(album, authentication);
+        adminValidator.validateAdmin(authentication);
+        albumService.updateAlbum(album);
         return "redirect:/album";
     }
 
     @PostMapping("/deleteAlbum/{id}")
-    public String deleteAlbum(@PathVariable("id") int albumId) {
+    public String deleteAlbum(@PathVariable("id") int albumId, Authentication authentication) {
+        adminValidator.validateAdmin(authentication);
         albumService.deleteAlbum(albumId);
         return "redirect:/album";
     }
