@@ -32,7 +32,7 @@ public class ArtistController {
     }
 
     @PostMapping("/artist/updateArtist/{id}")
-    public String updateArtist(@PathVariable("id") int id, @RequestParam("name") String name) {
+    public String updateArtist(@PathVariable Integer id, @RequestParam String name) {
         artistService.updateArtist(id, name);
         return "redirect:/artist";
     }

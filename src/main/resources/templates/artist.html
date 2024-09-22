@@ -77,12 +77,20 @@
             <p th:text="${artist.name}"></p>
 
             <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
-                <form th:action="@{/updateArtist/{id}(id=${artist.id})}" method="post">
+
+                <form th:action="@{/artist/updateArtist/{id}(id=${artist.id})}" method="post">
+                    <input type="hidden" name="artist.id" th:value="${artist.name}"/>
+                    <label>
+                        <input type="text" name="name" placeholder="Имя"/>
+                    </label>
                     <button type="submit">Редактировать</button>
                 </form>
-                <form th:action="@{/deleteArtist/{id}(id=${artist.id})}" method="post">
+
+                <form th:action="@{/artist/deleteArtist/{id}(id=${artist.id})}" method="post">
                     <button type="submit">Удалить</button>
                 </form>
+
+
             </div>
         </div>
     </div>
