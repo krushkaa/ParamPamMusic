@@ -88,13 +88,33 @@
                     <button type="submit">Удалить</button>
                 </form>
             </div>
+
             <form th:action="@{/cart/addToCart}" method="post">
                 <input type="hidden" name="audioTrackId" th:value="${audioTrack.id}"/>
                 <button type="submit">Добавить в корзину</button>
             </form>
+
+            <form th:action="@{/review/add}" method="post">
+                <input type="hidden" name="audioTrackId" th:value="${audioTrack.id}"/>
+
+                <label for="rating">Оценка:</label>
+                <select name="rating" id="rating">
+                    <option value="1">1 звезда</option>
+                    <option value="2">2 звезды</option>
+                    <option value="3">3 звезды</option>
+                    <option value="4">4 звезды</option>
+                    <option value="5">5 звезд</option>
+                </select>
+
+                <label for="comment">Комментарий:</label>
+                <textarea name="comment" id="comment"></textarea>
+
+                <button type="submit">Оставить отзыв</button>
+            </form>
+            <form th:action="@{'/review/' + ${audioTrack.id}}" method="get">
+                <button type="submit" class="btn btn-primary">Посмотреть отзывы</button>
+            </form>
         </div>
-
-
     </div>
 
     <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">

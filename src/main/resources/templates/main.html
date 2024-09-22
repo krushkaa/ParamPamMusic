@@ -6,7 +6,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-image: url('/static/img/music.jpg');
+            background-image: url('/img/music.jpg');
             background-size: cover;
             background-repeat: no-repeat;
             background-attachment: fixed;
@@ -84,16 +84,16 @@
 
 <div class="center">
     <div th:href="@{/album}" onclick="window.location.href='/album'">
-        <img src="/static/img/vinyl.jpg" alt="Albums Image"><br>Список альбомов
+        <img src="/img/vinyl.jpg" alt="Albums Image"><br>Список альбомов
     </div>
     <div th:href="@{/track}" onclick="window.location.href='/track'">
-        <img src="/static/img/track.jpg" alt="Tracks Image"><br>Список треков
+        <img src="/img/track.jpg" alt="Tracks Image"><br>Список треков
     </div>
     <div th:href="@{/artist}" onclick="window.location.href='/artist'">
-        <img src="/static/img/artist.jfif" alt="Artists Image"><br>Список артистов
+        <img src="/img/artist.jfif" alt="Artists Image"><br>Список артистов
     </div>
     <div id="myTracksButton" th:href="@{/myTrack}" onclick="window.location.href='/myTrack'">
-        <img src="/static/img/my_track.jpg" alt="My Tracks Image"><br>Мои треки
+        <img src="/img/my_track.jpg" alt="My Tracks Image"><br>Мои треки
     </div>
 </div>
 

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class AdminValidator {
 
     public void validateAdmin (Authentication authentication){
-        boolean isAdmin = authentication.getAuthorities().stream().anyMatch(g -> g.getAuthority().equals("ROLE_ADMIN"));
+        boolean isAdmin = authentication.getAuthorities().stream().anyMatch(g -> g.getAuthority().equals("ADMIN"));
         if(!isAdmin){
             throw new BadCredentialsException("Доступ разрешен только администратору.");
         }
