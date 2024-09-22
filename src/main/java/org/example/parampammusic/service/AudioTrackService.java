@@ -11,10 +11,10 @@ import java.util.Optional;
 @Service
 public class AudioTrackService {
 
-    private final AudioTrackRepository audioTrackRepository;
+    private static AudioTrackRepository audioTrackRepository;
 
     public AudioTrackService(AudioTrackRepository audioTrackRepository) {
-        this.audioTrackRepository = audioTrackRepository;
+        AudioTrackService.audioTrackRepository = audioTrackRepository;
     }
 
     public void addAudioTrack(AudioTrack audioTrack) {
@@ -23,6 +23,10 @@ public class AudioTrackService {
 
     public Optional<AudioTrack> getAudioTrackById(int id) {
         return audioTrackRepository.findById(id);
+    }
+
+    public static String getTrackNameByAudioTrackId(int audioTrackId) {
+        return audioTrackRepository.getAudioTrackName(audioTrackId);
     }
 
     public void updateAudioTrack(AudioTrack audioTrack) {

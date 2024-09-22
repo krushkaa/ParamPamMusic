@@ -3,7 +3,7 @@ package org.example.parampammusic.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Objects;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,7 +13,7 @@ import java.util.Objects;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "login", nullable = false, unique = true)
     private String login;
@@ -31,9 +31,9 @@ public class User {
     private int bonusPoint;
 
     @ManyToOne
-    @JoinColumn(name = "role_name", nullable = false)
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    public User(String testUser, String password) {
-    }
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders;
 }

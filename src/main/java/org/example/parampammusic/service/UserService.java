@@ -1,8 +1,8 @@
 package org.example.parampammusic.service;
 
 import jakarta.servlet.http.HttpSession;
-import org.example.parampammusic.entity.Role;
-import org.example.parampammusic.entity.User;
+import org.example.parampammusic.entity.*;
+import org.example.parampammusic.repository.AudioTrackRepository;
 import org.example.parampammusic.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,9 +14,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import javax.sound.midi.Track;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -24,11 +24,16 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
+    private final AudioTrackRepository audioTrackRepository;
 
-    public UserService(UserRepository userRepository, RoleService roleService, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository,
+                       RoleService roleService,
+                       PasswordEncoder passwordEncoder,
+                       AudioTrackRepository audioTrackRepository) {
         this.userRepository = userRepository;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
+        this.audioTrackRepository = audioTrackRepository;
     }
 
     public void createUser(User user, String rawPassword, int roleId) {
@@ -64,6 +69,7 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("Cannot find user with login=" + login);
         }
     }
+
     public Integer getUserById() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
@@ -78,4 +84,54 @@ public class UserService implements UserDetailsService {
     public User findByLogin(String login) {
         return userRepository.findByLogin(login);
     }
+
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String login = authentication.getName();
+        return userRepository.findByLogin(login);
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public List<AudioTrack> getPurchasedTracksForUser(int userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            List<Order> orders = user.getOrders();
+            List<AudioTrack> purchasedTracks = new ArrayList<>();
+            for (Order order : orders) {
+                if (order.getStatus() == OrderStatus.COMPLETED) {
+                    List<? extends AudioTrack> audioTracks = order.getOrderItems().stream()
+                            .map(OrderItem::getAudioTrack)
+                            .collect(Collectors.toList());
+                    purchasedTracks.addAll(audioTracks);
+                }
+            }
+            return purchasedTracks;
+        }
+        return Collections.emptyList();
+    }
+
+    public void updateUser(Integer userId, String email, String telNumber) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            user.setEmail(email);
+            user.setTelNumber(telNumber);
+            userRepository.save(user);
+        }
+    }
+
+    public void addBonusPoints(Integer userId, int bonusPoints) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            user.setBonusPoint(user.getBonusPoint() + bonusPoints);
+            userRepository.save(user);
+        }
+    }
+
+    public void deleteUser(Integer userId) {
+        userRepository.deleteById(userId);
+    }
+
 }

@@ -41,7 +41,7 @@ public class CartController {
         if (principal == null) {
             return "redirect:/login";
         }
-        User user = userService.findByLogin(principal.getName());
+        User user = userService.getCurrentUser();
         if (user != null) {
             orderService.addTrackToOrder(user, audioTrackId);
         }

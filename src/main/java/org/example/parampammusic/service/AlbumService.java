@@ -2,7 +2,6 @@ package org.example.parampammusic.service;
 
 import org.example.parampammusic.entity.Album;
 import org.example.parampammusic.repository.AlbumRepository;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,15 +29,11 @@ public class AlbumService {
         albumRepository.save(album);
     }
 
-    public Album updateAlbum(Album album, Authentication authentication) {
+    public void updateAlbum(Album album) {
         Optional<Album> existingAlbum = albumRepository.findById(album.getId());
 
         if (existingAlbum.isPresent()) {
-            if (isAdmin(authentication)) {
-                return albumRepository.save(album);
-            } else {
-                throw new IllegalStateException("Only admins can update albums.");
-            }
+            albumRepository.save(album);
         } else {
             throw new IllegalArgumentException("Album with id " + album.getId() + " not found for update.");
         }
@@ -51,10 +46,5 @@ public class AlbumService {
         } else {
             throw new IllegalArgumentException("Album with id " + albumId + " not found for delete.");
         }
-    }
-    private boolean isAdmin(Authentication authentication) {
-
-        return authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
     }
 }

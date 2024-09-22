@@ -18,9 +18,11 @@ public class ArtistService {
     public List<Artist> getAllArtist() {
         return artistRepository.findAll();
     }
+
     public void addArtist(Artist artist) {
         artistRepository.save(artist);
     }
+
     public Artist getArtistById(int id) {
         return artistRepository.findById(id).orElse(null);
     }

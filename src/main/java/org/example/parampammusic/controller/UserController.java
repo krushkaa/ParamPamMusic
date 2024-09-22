@@ -1,25 +1,27 @@
 package org.example.parampammusic.controller;
 
-import lombok.RequiredArgsConstructor;
-import org.example.parampammusic.DTO.UserDTO;
-import org.example.parampammusic.entity.User;
-import org.example.parampammusic.util.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.example.parampammusic.entity.AudioTrack;
+import org.example.parampammusic.service.UserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
-@Controller
-@RequestMapping("/api/users")
-@RequiredArgsConstructor
+import java.util.List;
+
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
-    @PostMapping("/registrationUser")
-    public User registerUser(@RequestBody UserDTO userDTO) {
-        return userService.createUser(userDTO);
+    @GetMapping("/myTrack")
+    public ResponseEntity<List<AudioTrack>> getPurchasedTracks(@PathVariable int userId) {
+        List<AudioTrack> purchasedTracks = userService.getPurchasedTracksForUser(userId);
+        if (purchasedTracks.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(purchasedTracks);
+        }
     }
 }
