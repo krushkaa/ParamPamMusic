@@ -14,36 +14,31 @@ import java.util.List;
 public class ArtistController {
 
     private final ArtistService artistService;
-    private final AdminValidator adminValidator;
 
-    public ArtistController(ArtistService artistService, AdminValidator adminValidator) {
+    public ArtistController(ArtistService artistService) {
         this.artistService = artistService;
-        this.adminValidator = adminValidator;
     }
 
     @GetMapping("/artist")
     public String getAllArtist(Model model) {
         List<Artist> artists = artistService.getAllArtist();
         model.addAttribute("artist", artists);
-        return "redirect:/artist";
+        return "artist";
     }
-    @PostMapping("/addArtist")
-    public String addArtist(@ModelAttribute Artist artist, Authentication authentication) {
-        adminValidator.validateAdmin(authentication);
+    @PostMapping("/artist/addArtist")
+    public String addArtist(@ModelAttribute Artist artist) {
         artistService.addArtist(artist);
         return "redirect:/artist";
     }
 
-    @PostMapping("/updateArtist/{id}")
-    public String updateArtist(@PathVariable("id") int id, @RequestParam("name") String name, Authentication authentication) {
-        adminValidator.validateAdmin(authentication);
+    @PostMapping("/artist/updateArtist/{id}")
+    public String updateArtist(@PathVariable("id") int id, @RequestParam("name") String name) {
         artistService.updateArtist(id, name);
         return "redirect:/artist";
     }
 
-    @PostMapping("/deleteArtist/{id}")
-    public String deleteArtist(@PathVariable("id") int id, Authentication authentication) {
-        adminValidator.validateAdmin(authentication);
+    @PostMapping("/artist/deleteArtist/{id}")
+    public String deleteArtist(@PathVariable("id") int id) {
         artistService.deleteArtist(id);
         return "redirect:/artist";
     }

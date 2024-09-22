@@ -1,8 +1,10 @@
 package org.example.parampammusic.controller;
 
 import org.example.parampammusic.entity.User;
+import org.example.parampammusic.repository.UserRepository;
 import org.example.parampammusic.service.RoleService;
 import org.example.parampammusic.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

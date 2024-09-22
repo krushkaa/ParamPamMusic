@@ -1,16 +1,17 @@
 package org.example.parampammusic.security;
 
 import jakarta.servlet.DispatcherType;
-import org.example.parampammusic.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect;
 
 @Configuration
 @EnableWebSecurity
@@ -23,10 +24,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasRole("USER")
-                        .requestMatchers("/", "/registration", "/registrationForm","/custom-login", "/logout", "/album", "/track").permitAll()
-                        .requestMatchers("/resources/**","/img/**","/css/**").permitAll()
+                        .requestMatchers("/album/**", "/track/**", "/artist/**", "/profile/**", "/cart/**", "/my-tracks/**")
+                                        .hasAnyRole("ADMIN","USER")
+                        .requestMatchers("/", "/registration", "/registrationForm","/custom-login", "/logout")
+                                        .permitAll()
+                        .requestMatchers("/resources/**","/img/**","/css/**")
+                                        .permitAll()
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                         .requestMatchers("/main").authenticated()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(formLogin -> formLogin
                         .loginPage("/custom-login")
@@ -43,20 +49,25 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .sessionManagement(session -> session
-                        .maximumSessions(1)
-                        .maxSessionsPreventsLogin(true)
+                        .sessionFixation().newSession()
                 );
 
         return httpSecurity.build();
     }
 
     @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
-    public UserDetailsService userDetailsService(UserService userService) {
-        return userService; // Указываем кастомный UserService как реализацию UserDetailsService
+    public SpringSecurityDialect springSecurityDialect(){
+        return new SpringSecurityDialect();
     }
 }
 

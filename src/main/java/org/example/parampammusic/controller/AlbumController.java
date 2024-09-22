@@ -17,11 +17,9 @@ import java.util.List;
 public class AlbumController {
 
     private final AlbumService albumService;
-    private final AdminValidator adminValidator;
 
-    public AlbumController(AlbumService albumService, AdminValidator adminValidator) {
+    public AlbumController(AlbumService albumService) {
         this.albumService = albumService;
-        this.adminValidator = adminValidator;
     }
 
     @GetMapping("/album")
@@ -31,24 +29,21 @@ public class AlbumController {
         return "album";
     }
 
-    @PostMapping("/addAlbum")
-    public String addAlbum(@ModelAttribute Album album, Authentication authentication) {
-        adminValidator.validateAdmin(authentication);
+    @PostMapping("/album/addAlbum")
+    public String addAlbum(@ModelAttribute Album album) {
         albumService.addAlbum(album);
         return "redirect:/album";
     }
 
-    @PostMapping("/updateAlbum/{id}")
-    public String updateAlbum(@PathVariable("id") int albumId, Authentication authentication) {
+    @PostMapping("/album/updateAlbum/{id}")
+    public String updateAlbum(@PathVariable("id") int albumId) {
         Album album = albumService.getAlbumById(albumId);
-        adminValidator.validateAdmin(authentication);
         albumService.updateAlbum(album);
         return "redirect:/album";
     }
 
-    @PostMapping("/deleteAlbum/{id}")
-    public String deleteAlbum(@PathVariable("id") int albumId, Authentication authentication) {
-        adminValidator.validateAdmin(authentication);
+    @PostMapping("/album/deleteAlbum/{id}")
+    public String deleteAlbum(@PathVariable("id") int albumId) {
         albumService.deleteAlbum(albumId);
         return "redirect:/album";
     }

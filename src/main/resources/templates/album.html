@@ -35,6 +35,7 @@
         .actions {
             font-size: 25px;
         }
+
         .center div {
             padding: 10px;
             font-size: 14px;
@@ -75,24 +76,29 @@
         <div th:each="album : ${album}">
             <p th:text="${album.title}"></p>
             <p th:text="${album.releaseDate}"></p>
-            <form th:action="@{/updateAlbum/{id}(id=${album.id})}" method="post">
-                <button type="submit">Редактировать</button>
-            </form>
-            <form th:action="@{/deleteAlbum/{id}(id=${album.id})}" method="post">
-                <button type="submit">Удалить</button>
-            </form>
+
+            <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                <form th:action="@{/updateAlbum/{id}(id=${album.id})}" method="post">
+                    <button type="submit">Редактировать</button>
+                </form>
+                <form th:action="@{/deleteAlbum/{id}(id=${album.id})}" method="post">
+                    <button type="submit">Удалить</button>
+                </form>
+            </div>
         </div>
     </div>
 
-    <form action="/addAlbum" method="post">
-        <label>
-            <input type="text" name="title" placeholder="Название альбома">
-        </label>
-        <label>
-            <input type="text" name="releaseDate" placeholder="Дата выпуска альбома">
-        </label>
-        <button type="submit">Добавить новый альбом</button>
-    </form>
+    <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <form th:action="@{/album/addAlbum}" method="post">
+            <label>
+                <input type="text" name="title" placeholder="Название альбома">
+            </label>
+            <label>
+                <input type="text" name="releaseDate" placeholder="Дата выпуска альбома">
+            </label>
+            <button type="submit">Добавить новый альбом</button>
+        </form>
+    </div>
 </div>
 
 <div class="footer">

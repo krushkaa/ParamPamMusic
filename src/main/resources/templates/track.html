@@ -35,6 +35,7 @@
         .actions {
             font-size: 25px;
         }
+
         .center div {
             padding: 10px;
             font-size: 14px;
@@ -74,37 +75,63 @@
     <div id="audioTrackList">
         <div th:each="audioTrack : ${audioTrack}">
             <p th:text="${audioTrack.title}"></p>
-            <p th:text="${audioTrack.artist_id}"></p>
-            <p th:text="${audioTrack.genre_id}"></p>
-            <p th:text="${audioTrack.album_id}"></p>
+            <p th:text="${audioTrack.artist.name}"></p>
+            <p th:text="${audioTrack.genre.name}"></p>
+            <p th:text="${audioTrack.album.title}"></p>
             <p th:text="${audioTrack.price}"></p>
-            <form th:action="@{/updateAudioTrack/{id}(id=${audioTrack.id})}" method="post">
-                <button type="submit">Редактировать</button>
-            </form>
-            <form th:action="@{/deleteAudioTrack/{id}(id=${audioTrack.id})}" method="post">
-                <button type="submit">Удалить</button>
+
+            <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                <form th:action="@{/updateAudioTrack/{id}(id=${audioTrack.id})}" method="post">
+                    <button type="submit">Редактировать</button>
+                </form>
+                <form th:action="@{/deleteAudioTrack/{id}(id=${audioTrack.id})}" method="post">
+                    <button type="submit">Удалить</button>
+                </form>
+            </div>
+            <form th:action="@{/cart/addToCart}" method="post">
+                <input type="hidden" name="audioTrackId" th:value="${audioTrack.id}"/>
+                <button type="submit">Добавить в корзину</button>
             </form>
         </div>
+
+
     </div>
 
-    <form action="/addTrack" method="post">
-        <label>
-            <input type="text" name="title" placeholder="Название аудиотрека">
-        </label>
-        <label>
-            <input type="text" name="album_id" placeholder="Альбом">
-        </label>
-        <label>
-            <input type="text" name="price" placeholder="Цена">
-        </label>
-        <label>
-            <input type="text" name="artist_id" placeholder="Артист">
-        </label>
-        <label>
-            <input type="text" name="genre_id" placeholder="Жанр">
-        </label>
-        <button type="submit">Добавить новый трек</button>
-    </form>
+    <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <form th:action="@{/track/addTrack}" method="post">
+            <label>
+                <input type="text" name="title" placeholder="Название аудиотрека">
+            </label>
+            <label>
+                <select name="album">
+                    <option value="">Выберите альбом</option>
+                    <option th:each="album : ${albums}"
+                            th:value="${album.id}"
+                            th:text="${album.title}"></option>
+                </select>
+            </label>
+            <label>
+                <input type="text" name="price" placeholder="Цена">
+            </label>
+            <label>
+                <select name="artist">
+                    <option value="">Выберите исполнителя</option>
+                    <option th:each="artist : ${artists}"
+                            th:value="${artist.id}"
+                            th:text="${artist.name}"></option>
+                </select>
+            </label>
+            <label>
+                <select name="genre">
+                    <option value="">Выберите жанр</option>
+                    <option th:each="genre : ${genres}"
+                            th:value="${genre.id}"
+                            th:text="${genre.name}"></option>
+                </select>
+            </label>
+            <button type="submit">Добавить новый трек</button>
+        </form>
+    </div>
 </div>
 
 <div class="footer">

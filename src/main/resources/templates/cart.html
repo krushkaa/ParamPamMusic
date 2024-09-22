@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artist</title>
+    <title>Album</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -69,34 +69,28 @@
         <a th:href="@{/cart}">Корзина</a> | <a th:href="@{/profile}">Профиль</a> | <a th:href="@{/logout}">Выйти</a>
     </div>
 </div>
-
-<div class="center">
-    <h2 style="color: white">Список артистов</h2>
-    <div id="artistList">
-        <div th:each="artist : ${artist}">
-            <p th:text="${artist.name}"></p>
-
-            <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
-                <form th:action="@{/updateArtist/{id}(id=${artist.id})}" method="post">
-                    <button type="submit">Редактировать</button>
-                </form>
-                <form th:action="@{/deleteArtist/{id}(id=${artist.id})}" method="post">
-                    <button type="submit">Удалить</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
-        <form th:action="@{/artist/addArtist}" method="post">
-            <label>
-                <input type="text" name="name" placeholder="Имя артиста" required>
-            </label>
-            <button type="submit">Добавить нового артиста</button>
-        </form>
-    </div>
-</div>
-
+<h1>Корзина</h1>
+<table>
+    <tr>
+        <th>Трек</th>
+        <th>Цена</th>
+        <th>Действие</th>
+    </tr>
+    <tr th:each="item : ${orderItems}">
+        <td th:text="${item.audioTrack.title}"></td>
+        <td th:text="${item.price}"></td>
+        <td>
+            <form th:action="@{/cart/removeFromCart}" method="post">
+                <input type="hidden" name="audioTrackId" th:value="${item.audioTrack.id}" />
+                <button type="submit">Удалить</button>
+            </form>
+        </td>
+    </tr>
+</table>
+<p>Общая стоимость: <span th:text="${totalPrice}"></span></p>
+<form th:action="@{/cart/checkout}" method="post">
+    <button type="submit">Оформить заказ</button>
+</form>
 <div class="footer">
     Контакты: Иваныч, +375(29)123-45-67, example@mail.ru
 </div>
