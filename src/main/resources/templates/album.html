@@ -78,12 +78,23 @@
             <p th:text="${album.releaseDate}"></p>
 
             <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
-                <form th:action="@{/updateAlbum/{id}(id=${album.id})}" method="post">
-                    <button type="submit">Редактировать</button>
-                </form>
-                <form th:action="@{/deleteAlbum/{id}(id=${album.id})}" method="post">
-                    <button type="submit">Удалить</button>
-                </form>
+                <form th:action="@{album/updateAlbum/{id}(id=${album.id})}" method="post">
+                    <input type="hidden" name="album.id" th:value="${album.title}"/>
+                    <label>
+                        <input type="text" name="title" placeholder="Название"/>
+                    </label>
+                    <form th:action="@{album/updateAlbum/{id}(id=${album.id})}" method="post">
+                        <input type="hidden" name="album.id" th:value="${album.releaseDate}"/>
+                        <label>
+                            <input type="text" name="releaseDate" placeholder="Дата"/>
+                        </label>
+                        <button type="submit">Редактировать</button>
+                    </form>
+                    </form>
+                    <form th:action="@{album/deleteAlbum/{id}(id=${album.id})}" method="post">
+                        <input type="hidden" name="albumId" th:value="${album.id}"/>
+                        <button type="submit">Удалить альбом</button>
+                    </form>
             </div>
         </div>
     </div>

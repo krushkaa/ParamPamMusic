@@ -2,15 +2,11 @@ package org.example.parampammusic.controller;
 
 import org.example.parampammusic.entity.Album;
 import org.example.parampammusic.service.AlbumService;
-import org.example.parampammusic.util.AdminValidator;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -36,9 +32,12 @@ public class AlbumController {
     }
 
     @PostMapping("/album/updateAlbum/{id}")
-    public String updateAlbum(@PathVariable("id") int albumId) {
-        Album album = albumService.getAlbumById(albumId);
-        albumService.updateAlbum(album);
+    public String updateAlbum(Album album, @RequestParam LocalDate releaseDate) {
+        if (album == null) {
+            return "redirect:/error";
+        } else {
+            albumService.updateAlbum(album, releaseDate);
+        }
         return "redirect:/album";
     }
 

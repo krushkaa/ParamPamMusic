@@ -112,18 +112,24 @@
     <form action="/profile/updateUser" method="post">
         <p>Логин: <span th:text="${user.login}"></span></p>
         <input type="hidden" name="userId" th:value="${user.id}"/>
-        <input type="text" name="login" placeholder="Новый логин"/>
+        <label>
+            <input type="text" name="login" placeholder="Новый логин"/>
+        </label>
         <button type="submit">Обновить</button>
 
         <p>Email: <span th:text="${user.email}"></span></p>
         <input type="hidden" name="userId" th:value="${user.id}"/>
-        <input type="text" name="email" placeholder="Новая почта"/>
+        <label>
+            <input type="text" name="email" placeholder="Новая почта"/>
+        </label>
         <button type="submit">Обновить</button>
 
 
         <p>Номер телефона: <span th:text="${user.telNumber}"></span></p>
         <input type="hidden" name="userId" th:value="${user.id}"/>
-        <input type="text" name="telNumber" placeholder="Новый телефон"/>
+        <label>
+            <input type="text" name="telNumber" placeholder="Новый телефон"/>
+        </label>
         <button type="submit">Обновить</button>
 
 

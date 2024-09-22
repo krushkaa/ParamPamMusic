@@ -1,6 +1,8 @@
 package org.example.parampammusic.security;
 
 import jakarta.servlet.DispatcherType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,8 +19,11 @@ import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private static final Logger logger = LogManager.getLogger(SecurityConfig.class);
+
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        logger.info("Configuring security settings...");
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
@@ -51,6 +56,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionFixation().newSession()
                 );
+        logger.info("Security settings configured successfully.");
 
         return httpSecurity.build();
     }

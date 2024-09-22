@@ -1,6 +1,8 @@
 package org.example.parampammusic.service;
 
 import jakarta.servlet.http.HttpSession;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.parampammusic.entity.*;
 import org.example.parampammusic.repository.AudioTrackRepository;
 import org.example.parampammusic.repository.UserRepository;
@@ -14,26 +16,25 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.sound.midi.Track;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
 
+    private static final Logger logger = LogManager.getLogger(UserService.class);
+
+
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
-    private final AudioTrackRepository audioTrackRepository;
 
     public UserService(UserRepository userRepository,
                        RoleService roleService,
-                       PasswordEncoder passwordEncoder,
-                       AudioTrackRepository audioTrackRepository) {
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
-        this.audioTrackRepository = audioTrackRepository;
     }
 
     public void createUser(User user, String rawPassword, int roleId) {
@@ -65,7 +66,7 @@ public class UserService implements UserDetailsService {
                     user.getPassword(),
                     Collections.singleton(new SimpleGrantedAuthority(user.getRole().getRoleName())));
         } else {
-            System.out.println("User not found: " + login);
+            logger.info("User found: {}", user.getLogin());
             throw new UsernameNotFoundException("Cannot find user with login=" + login);
         }
     }

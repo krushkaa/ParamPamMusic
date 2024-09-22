@@ -15,16 +15,6 @@ public class WelcomeController {
     public String mainPage() {
         return "main";
     }
-
-//    @GetMapping("/login")
-//    public String login() {
-//        return "/loginForm";
-//    }
-
-//    @GetMapping("/registration")
-//    public String registration() {
-//        return "/registration";
-//    }
 }
 
 

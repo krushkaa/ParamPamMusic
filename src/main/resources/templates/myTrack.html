@@ -72,8 +72,8 @@
 <div style="color: white">
 <h2>Купленные треки:</h2>
 <ul>
-    <li th:each="track : ${user.purchasedTracks}">
-        <span th:text="${track.title}"></span> - <span th:text="${track.artist}"></span>
+    <li th:each="audioTrack : ${user.purchasedTracks}">
+        <span th:text="${audioTrack.title}"></span> - <span th:text="${audioTrack.artist}"></span>
     </li>
 </ul>
 </div>
