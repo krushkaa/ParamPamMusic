@@ -19,9 +19,9 @@ public class GenreService {
         return genreRepository.findAll();
     }
 
-    public Genre getGenreById(int genreId) {
-        return genreRepository.findById(genreId)
-                .orElseThrow(() -> new IllegalArgumentException("Genre with id " + genreId + " not found."));
+    public Genre getGenreById(Genre genre) {
+        return genreRepository.findById(genre.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Genre with id " + genre.getId() + " not found."));
     }
     public Genre findByName(String name) {
         return genreRepository.findByName(name)

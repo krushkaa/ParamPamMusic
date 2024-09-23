@@ -37,15 +37,43 @@ public class AudioTrackController {
         return "track";
     }
 
+    @GetMapping("/track/addTrack")
+    public String showAddTrackForm(Model model) {
+        model.addAttribute("albums", albumService.getAllAlbums());
+        model.addAttribute("artists", artistService.getAllArtist());
+        model.addAttribute("genres", genreService.getAllGenres());
+
+        return "redirect:/track";
+    }
+
     @PostMapping("/track/addTrack")
-    public String addAudioTrack(@ModelAttribute AudioTrack audioTrack, Model model) {
-        List<Album> albums = albumService.getAllAlbums();
-        List<Artist> artists = artistService.getAllArtist();
-        List<Genre> genres = genreService.getAllGenres();
-        model.addAttribute("albums", albums);
-        model.addAttribute("artists", artists);
-        model.addAttribute("genres", genres);
+    public String addAudioTrack(@RequestParam String title,
+                                @RequestParam double price,
+                                @RequestParam int albumId,
+                                @RequestParam int artistId,
+                                @RequestParam int genreId) {
+
+        Album album = new Album();
+        album.setId(albumId);
+        album = albumService.getAlbumById(album);
+
+        Artist artist = new Artist();
+        artist.setId(artistId);
+        artist = artistService.getArtistById(artist);
+
+        Genre genre = new Genre();
+        genre.setId(genreId);
+        genre = genreService.getGenreById(genre);
+
+        AudioTrack audioTrack = new AudioTrack();
+        audioTrack.setTitle(title);
+        audioTrack.setPrice(price);
+        audioTrack.setAlbum(album);
+        audioTrack.setArtist(artist);
+        audioTrack.setGenre(genre);
+
         audioTrackService.addAudioTrack(audioTrack);
+
         return "redirect:/track";
     }
 

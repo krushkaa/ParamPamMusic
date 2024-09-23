@@ -23,8 +23,9 @@ public class ArtistService {
         artistRepository.save(artist);
     }
 
-    public Artist getArtistById(int id) {
-        return artistRepository.findById(id).orElse(null);
+    public Artist getArtistById(Artist artist) {
+        return artistRepository.findById(artist.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Artist with id " + artist.getId() + " not found."));
     }
 
     public void updateArtist(Integer id, String name) {
