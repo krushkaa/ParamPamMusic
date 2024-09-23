@@ -80,43 +80,41 @@
             <p th:text="Альбом + ${audioTrack.album.title}"></p>
             <p th:text="Цена + ${audioTrack.price}"></p>
 
+            <audio controls>
+                <source th:src="@{/music/Clutch - The Regulator.mp3}" type="audio/mp3">
+                Ваш браузер не поддерживает аудиоплеер.
+            </audio>
+
             <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
                 <form th:action="@{/track/updateAudioTrack/{id}(id=${audioTrack.id})}" method="post">
                     <input type="hidden" name="audioTrackTitle" th:value="${audioTrack.title}"/>
                     <label>
-                        <input type="text" name="title" placeholder="Новое название"/>
+                        <input type="text" name="title" placeholder="Новое название" th:value="${audioTrack.title}"/>
                     </label>
 
-                    <form th:action="@{/track/updateAudioTrack/{id}(id=${audioTrack.id})}" method="post">
-                        <input type="hidden" name="audioTrackArtistName" th:value="${audioTrack.artist.name}"/>
-                        <label>
-                            <input type="text" name="artistName" placeholder="Новый исполнитель"/>
-                        </label>
+                    <input type="hidden" name="audioTrackArtistName" th:value="${audioTrack.artist.name}"/>
+                    <label>
+                        <input type="text" name="artistName" placeholder="Новый исполнитель" th:value="${audioTrack.artist.name}"/>
+                    </label>
 
-                        <form th:action="@{/track/updateAudioTrack/{id}(id=${audioTrack.id})}" method="post">
-                            <input type="hidden" name="audioTrackGenreName" th:value="${audioTrack.genre.name}"/>
-                            <label>
-                                <input type="text" name="genreName" placeholder="Новый жанр"/>
-                            </label>
+                    <input type="hidden" name="audioTrackGenreName" th:value="${audioTrack.genre.name}"/>
+                    <label>
+                        <input type="text" name="genreName" placeholder="Новый жанр" th:value="${audioTrack.genre.name}"/>
+                    </label>
 
-                            <form th:action="@{/track/updateAudioTrack/{id}(id=${audioTrack.id})}" method="post">
-                                <input type="hidden" name="audioTrackAlbumTitle" th:value="${audioTrack.album.title}"/>
-                                <label>
-                                    <input type="text" name="albumTitle" placeholder="Новый альбом"/>
-                                </label>
+                    <input type="hidden" name="audioTrackAlbumTitle" th:value="${audioTrack.album.title}"/>
+                    <label>
+                        <input type="text" name="albumTitle" placeholder="Новый альбом" th:value="${audioTrack.album.title}"/>
+                    </label>
 
-                                <form th:action="@{/track/updateAudioTrack/{id}(id=${audioTrack.id})}" method="post">
-                                    <input type="hidden" name="audioTrackPrice" th:value="${audioTrack.price}"/>
-                                    <label>
-                                        <input type="number" name="price" placeholder="Новая цена"/>
-                                    </label>
+                    <input type="hidden" name="audioTrackPrice" th:value="${audioTrack.price}"/>
+                    <label>
+                        <input type="number" name="price" placeholder="Новая цена" th:value="${audioTrack.price}"/>
+                    </label>
 
-                                    <button type="submit">Редактировать</button>
-                                </form>
-                            </form>
-                        </form>
-                    </form>
+                    <button type="submit">Редактировать</button>
                 </form>
+
                 <form th:action="@{/track/deleteAudioTrack/{id}(id=${audioTrack.id})}" method="post">
                     <button type="submit">Удалить</button>
                 </form>
@@ -156,7 +154,7 @@
                 <input type="text" name="title" placeholder="Название аудиотрека">
             </label>
             <label>
-                <select name="album">
+                <select name="albumId">
                     <option value="">Выберите альбом</option>
                     <option th:each="album : ${albums}"
                             th:value="${album.id}"
@@ -167,7 +165,7 @@
                 <input type="text" name="price" placeholder="Цена">
             </label>
             <label>
-                <select name="artist">
+                <select name="artistId">
                     <option value="">Выберите исполнителя</option>
                     <option th:each="artist : ${artists}"
                             th:value="${artist.id}"
@@ -175,7 +173,7 @@
                 </select>
             </label>
             <label>
-                <select name="genre">
+                <select name="genreId">
                     <option value="">Выберите жанр</option>
                     <option th:each="genre : ${genres}"
                             th:value="${genre.id}"
@@ -184,6 +182,8 @@
             </label>
             <button type="submit">Добавить новый трек</button>
         </form>
+
+
     </div>
 </div>
 
