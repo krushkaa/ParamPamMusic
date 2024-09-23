@@ -8,14 +8,9 @@ import org.example.parampammusic.service.AlbumService;
 import org.example.parampammusic.service.ArtistService;
 import org.example.parampammusic.service.AudioTrackService;
 import org.example.parampammusic.service.GenreService;
-import org.example.parampammusic.util.AdminValidator;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -55,17 +50,23 @@ public class AudioTrackController {
     }
 
     @PostMapping("/track/updateAudioTrack/{id}")
-    public String updateAudioTrack(@PathVariable("id") int audioTrackId, @ModelAttribute AudioTrack updatedAudioTrack) {
-        AudioTrack audioTrack = audioTrackService.getAudioTrackById(audioTrackId)
-                .orElseThrow(() -> new IllegalArgumentException("AudioTrack not found"));
-        audioTrack.setTitle(updatedAudioTrack.getTitle());
-        audioTrack.setPrice(updatedAudioTrack.getPrice());
-        audioTrack.setAlbum(updatedAudioTrack.getAlbum());
-        audioTrack.setArtist(updatedAudioTrack.getArtist());
-        audioTrack.setGenre(updatedAudioTrack.getGenre());
-        audioTrackService.updateAudioTrack(audioTrack);
+    public String updateAudioTrack(
+            @PathVariable Integer id,
+            @RequestParam String title,
+            @RequestParam String genreName,
+            @RequestParam String artistName,
+            @RequestParam String albumTitle,
+            @RequestParam double price) {
+
+        Genre genre = genreService.findByName(genreName);
+        Artist artist = artistService.findByName(artistName);
+        Album album = albumService.findByTitle(albumTitle);
+
+        audioTrackService.updateAudioTrack(id, title, genre, artist, album, price);
+
         return "redirect:/track";
     }
+
 
     @PostMapping("/track/deleteAudioTrack/{id}")
     public String deleteAudioTrack(@PathVariable("id") int audioTrackId) {

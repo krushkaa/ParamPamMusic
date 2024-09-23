@@ -27,7 +27,7 @@ public class ArtistService {
         return artistRepository.findById(id).orElse(null);
     }
 
-    public void updateArtist(int id, String name) {
+    public void updateArtist(Integer id, String name) {
         Artist artist = artistRepository.findById(id).orElse(null);
         if (artist != null) {
             artist.setName(name);
@@ -37,5 +37,10 @@ public class ArtistService {
 
     public void deleteArtist(int id) {
         artistRepository.deleteById(id);
+    }
+
+    public Artist findByName(String name) {
+        return artistRepository.findByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("Artist not found: " + name));
     }
 }

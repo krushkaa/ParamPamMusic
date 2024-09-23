@@ -1,8 +1,6 @@
 package org.example.parampammusic.service;
 
-import org.example.parampammusic.entity.Album;
 import org.example.parampammusic.entity.Genre;
-import org.example.parampammusic.repository.AlbumRepository;
 import org.example.parampammusic.repository.GenreRepository;
 import org.springframework.stereotype.Service;
 
@@ -24,5 +22,9 @@ public class GenreService {
     public Genre getGenreById(int genreId) {
         return genreRepository.findById(genreId)
                 .orElseThrow(() -> new IllegalArgumentException("Genre with id " + genreId + " not found."));
+    }
+    public Genre findByName(String name) {
+        return genreRepository.findByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("Genre not found: " + name));
     }
 }

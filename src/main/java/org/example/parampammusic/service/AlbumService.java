@@ -27,8 +27,13 @@ public class AlbumService {
 
     public Album getAlbumById(Album album) {
         logger.info("Getting album by id: {}", album.getId());
-            return albumRepository.findById(album.getId())
+        return albumRepository.findById(album.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Album with id " + album.getId() + " not found."));
+    }
+
+    public Album findByTitle(String title) {
+        return albumRepository.findByTitle(title)
+                .orElseThrow(() -> new IllegalArgumentException("Album not found: " + title));
     }
 
     public void addAlbum(Album album) {

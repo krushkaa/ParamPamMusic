@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.parampammusic.entity.*;
-import org.example.parampammusic.repository.AudioTrackRepository;
 import org.example.parampammusic.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
