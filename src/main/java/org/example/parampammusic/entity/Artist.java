@@ -5,7 +5,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
+/**
+ * Представляет сущность исполнителя.
+ */
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -13,10 +15,16 @@ import lombok.ToString;
 @Entity
 @Table(name = "artist")
 public class Artist {
+    /**
+     * Уникальный идентификатор исполнителя.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @Column (name = "name", nullable = false)
+    /**
+     * Имя исполнителя.
+     * Обязательное поле.
+     */
+    @Column (name = "artist_name", nullable = false)
     private String name;
 }

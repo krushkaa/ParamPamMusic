@@ -16,26 +16,47 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
+/**
+ * Сервис для управления пользователями и их аутентификацией.
+ * Предоставляет методы для создания пользователей, аутентификации, получения текущего пользователя,
+ * а также работы с ролями и бонусными баллами.
+ */
 @Service
 public class UserService implements UserDetailsService {
 
     private static final Logger logger = LogManager.getLogger(UserService.class);
 
-
     private final UserRepository userRepository;
     private final RoleService roleService;
+    private final OrderService orderService;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Конструктор для инициализации UserService с заданными репозиториями и кодировщиком паролей.
+     *
+     * @param userRepository  репозиторий для работы с пользователями
+     * @param roleService     сервис для работы с ролями
+     * @param orderService    сервис для работы с ролями
+     * @param passwordEncoder кодировщик паролей
+     */
     public UserService(UserRepository userRepository,
                        RoleService roleService,
+                       OrderService orderService,
                        PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleService = roleService;
+        this.orderService = orderService;
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Создает нового пользователя с указанными данными.
+     *
+     * @param user        пользовательские данные.
+     * @param rawPassword исходный пароль.
+     * @param roleId      идентификатор роли пользователя.
+     */
     public void createUser(User user, String rawPassword, int roleId) {
         String encodedPassword = passwordEncoder.encode(rawPassword);
         user.setPassword(encodedPassword);
@@ -45,15 +66,31 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public boolean authenticate(String login, String rawPassword, HttpSession session) {
-        User user = userRepository.findByLogin(login);
-        if (user != null && passwordEncoder.matches(rawPassword, user.getPassword())) {
-            session.setAttribute("login", user.getLogin());
-            return true;
-        }
-        return false;
-    }
+//    /**
+//     * Аутентифицирует пользователя по логину и паролю.
+//     *
+//     * @param login       логин пользователя.
+//     * @param rawPassword исходный пароль.
+//     * @param session     сессия для сохранения информации о пользователе.
+//     * @return true, если аутентификация прошла успешно, иначе false.
+//     */
+//    public boolean authenticate(String login, String rawPassword, HttpSession session) {
+//        User user = userRepository.findByLogin(login);
+//        if (user != null && passwordEncoder.matches(rawPassword, user.getPassword())) {
+//            session.setAttribute("login", user.getLogin());
+//            return true;
+//        }
+//        return false;
+//    }
 
+
+    /**
+     * Загружает пользователя по его логину для аутентификации.
+     *
+     * @param login логин пользователя.
+     * @return объект UserDetails с информацией о пользователе.
+     * @throws UsernameNotFoundException если пользователь не найден.
+     */
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         User user = userRepository.findByLogin(login);
@@ -70,6 +107,11 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    /**
+     * Возвращает идентификатор текущего пользователя.
+     *
+     * @return идентификатор текущего пользователя или null, если пользователь не найден.
+     */
     public Integer getUserById() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
@@ -81,22 +123,64 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
+    /**
+     * Ищет пользователя по логину.
+     *
+     * @param login логин пользователя.
+     * @return объект User, соответствующий логину.
+     */
     public User findByLogin(String login) {
         return userRepository.findByLogin(login);
     }
 
+    /**
+     * Возвращает текущего аутентифицированного пользователя.
+     *
+     * @return текущий пользователь.
+     */
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String login = authentication.getName();
         return userRepository.findByLogin(login);
     }
 
+    /**
+     * Возвращает список всех пользователей.
+     *
+     * @return список пользователей.
+     */
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    public List<AudioTrack> getPurchasedTracksForUser(int userId) {
-        User user = userRepository.findById(userId).orElse(null);
+    /**
+     * Оформляет покупки треков пользователя.
+     *
+     * @param items список позиций заказа
+     * @param user  пользователь, который совершает покупку
+     */
+    public void purchaseTracks(List<OrderItem> items, User user) {
+        Order order = new Order();
+        order.setUser(user);
+        order.setStatus(OrderStatus.COMPLETED);
+        order.setOrderDate(java.time.LocalDate.now());
+
+        double total = 0.0;
+        for (OrderItem item : items) {
+            item.setOrder(order);
+            total += item.getPrice();
+        }
+        order.setTotalPrice(total);
+        orderService.saveOrder(order);
+    }
+
+    /**
+     * Возвращает список купленных пользователем треков.
+     *
+     * @param user пользователь, для которого ищутся купленные треки.
+     * @return список купленных треков.
+     */
+    public List<AudioTrack> getPurchasedTracksForUser(User user) {
         if (user != null) {
             List<Order> orders = user.getOrders();
             List<AudioTrack> purchasedTracks = new ArrayList<>();
@@ -104,7 +188,7 @@ public class UserService implements UserDetailsService {
                 if (order.getStatus() == OrderStatus.COMPLETED) {
                     List<? extends AudioTrack> audioTracks = order.getOrderItems().stream()
                             .map(OrderItem::getAudioTrack)
-                            .collect(Collectors.toList());
+                            .toList();
                     purchasedTracks.addAll(audioTracks);
                 }
             }
@@ -113,6 +197,13 @@ public class UserService implements UserDetailsService {
         return Collections.emptyList();
     }
 
+    /**
+     * Обновляет email и телефонный номер пользователя.
+     *
+     * @param userId    идентификатор пользователя.
+     * @param email     новый email.
+     * @param telNumber новый телефонный номер.
+     */
     public void updateUser(Integer userId, String email, String telNumber) {
         User user = userRepository.findById(userId).orElse(null);
         if (user != null) {
@@ -122,6 +213,12 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    /**
+     * Добавляет бонусные баллы пользователю.
+     *
+     * @param userId      идентификатор пользователя.
+     * @param bonusPoints количество добавляемых бонусных баллов.
+     */
     public void addBonusPoints(Integer userId, int bonusPoints) {
         User user = userRepository.findById(userId).orElse(null);
         if (user != null) {
@@ -130,8 +227,12 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    /**
+     * Удаляет пользователя по идентификатору.
+     *
+     * @param userId идентификатор удаляемого пользователя.
+     */
     public void deleteUser(Integer userId) {
         userRepository.deleteById(userId);
     }
-
 }

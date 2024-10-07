@@ -13,14 +13,22 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * Контроллер для управления отзывами на музыкальные треки.
+ */
 @Controller
 public class ReviewController {
 
     private final ReviewService reviewService;
     private final UserService userService;
     private final AudioTrackService audioTrackService;
-
+    /**
+     * Конструктор контроллера отзывов.
+     *
+     * @param reviewService      сервис для управления отзывами
+     * @param userService        сервис для управления пользователями
+     * @param audioTrackService  сервис для управления аудиотреками
+     */
     public ReviewController(ReviewService reviewService,
                             UserService userService,
                             AudioTrackService audioTrackService) {
@@ -29,6 +37,13 @@ public class ReviewController {
         this.audioTrackService = audioTrackService;
     }
 
+    /**
+     * Получает список отзывов для определённого аудиотрека.
+     *
+     * @param audioTrackId идентификатор аудиотрека
+     * @param model        объект Model для передачи данных на страницу
+     * @return представление страницы с отзывами
+     */
     @GetMapping("/review/{audioTrackId}")
     public String getReviews(@PathVariable int audioTrackId, Model model) {
         List<Review> reviews = reviewService.getReviewsForTrack(audioTrackId);
@@ -37,6 +52,14 @@ public class ReviewController {
         return "reviewList";
     }
 
+    /**
+     * Добавляет новый отзыв для аудиотрека.
+     *
+     * @param review       объект отзыва, заполненный пользователем
+     * @param audioTrackId идентификатор аудиотрека
+     * @param principal    объект, представляющий текущего пользователя
+     * @return перенаправление на страницу треков или на страницу ошибки
+     */
     @PostMapping("/review/add")
     public String addReview(@ModelAttribute Review review, @RequestParam int audioTrackId, Principal principal) {
         User currentUser = userService.findByLogin(principal.getName());
@@ -53,6 +76,13 @@ public class ReviewController {
         }
     }
 
+    /**
+     * Отображает список отзывов для аудиотрека.
+     *
+     * @param audioTrackId идентификатор аудиотрека
+     * @param model        объект Model для передачи данных на страницу
+     * @return перенаправление на страницу с отзывами
+     */
     @GetMapping("reviewList")
     public String showReview(@RequestParam(name = "audioTrackId") int audioTrackId, Model model) {
         List<Review> reviews = reviewService.getReviewsForTrack(audioTrackId);
