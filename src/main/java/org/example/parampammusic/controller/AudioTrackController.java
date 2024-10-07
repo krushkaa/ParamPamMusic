@@ -1,5 +1,6 @@
 package org.example.parampammusic.controller;
 
+import org.example.parampammusic.DTO.AudioTrackDTO;
 import org.example.parampammusic.entity.Album;
 import org.example.parampammusic.entity.Artist;
 import org.example.parampammusic.entity.AudioTrack;
@@ -13,7 +14,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
+/**
+ * Контроллер для управления действиями, связанными с аудиотреками.
+ */
 @Controller
 public class AudioTrackController {
 
@@ -22,14 +27,27 @@ public class AudioTrackController {
     private final ArtistService artistService;
     private final GenreService genreService;
 
+    /**
+     * Конструктор для инициализации зависимостей.
+     *
+     * @param audioTrackService сервис для работы с аудиотреками
+     * @param albumService      сервис для работы с альбомами
+     * @param artistService     сервис для работы с артистами
+     * @param genreService      сервис для работы с жанрами
+     */
     public AudioTrackController(AudioTrackService audioTrackService, AlbumService albumService, ArtistService artistService, GenreService genreService) {
         this.audioTrackService = audioTrackService;
         this.albumService = albumService;
         this.artistService = artistService;
         this.genreService = genreService;
-
     }
 
+    /**
+     * Отображает список всех аудиотреков.
+     *
+     * @param model объект Model для передачи данных в представление
+     * @return имя представления для страницы с аудиотреками
+     */
     @GetMapping("/track")
     public String getAllAudioTrack(Model model) {
         List<AudioTrack> audioTracks = audioTrackService.getAllAudioTrack();
@@ -37,6 +55,12 @@ public class AudioTrackController {
         return "track";
     }
 
+    /**
+     * Отображает форму для добавления нового аудиотрека.
+     *
+     * @param model объект Model для передачи данных в представление
+     * @return перенаправление на страницу с треками
+     */
     @GetMapping("/track/addTrack")
     public String showAddTrackForm(Model model) {
         model.addAttribute("albums", albumService.getAllAlbums());
@@ -46,6 +70,16 @@ public class AudioTrackController {
         return "redirect:/track";
     }
 
+    /**
+     * Добавляет новый аудиотрек.
+     *
+     * @param title    название трека
+     * @param price    цена трека
+     * @param albumId  ID альбома
+     * @param artistId ID артиста
+     * @param genreId  ID жанра
+     * @return перенаправление на страницу с треками
+     */
     @PostMapping("/track/addTrack")
     public String addAudioTrack(@RequestParam String title,
                                 @RequestParam double price,
@@ -77,25 +111,44 @@ public class AudioTrackController {
         return "redirect:/track";
     }
 
+    /**
+     * Обновляет аудиотрек по его ID.
+     *
+     * @param id            ID трека для обновления
+     * @param audioTrackDTO объект DTO с информацией об аудиотреке
+     * @return перенаправление на страницу с треками
+     */
     @PostMapping("/track/updateAudioTrack/{id}")
-    public String updateAudioTrack(
-            @PathVariable Integer id,
-            @RequestParam String title,
-            @RequestParam String genreName,
-            @RequestParam String artistName,
-            @RequestParam String albumTitle,
-            @RequestParam double price) {
+    public String updateAudioTrack(@PathVariable Integer id, @ModelAttribute AudioTrackDTO audioTrackDTO) {
+        Optional<AudioTrack> optionalAudioTrack = audioTrackService.getAudioTrackById(id);
+        if (optionalAudioTrack.isPresent()) {
+            AudioTrack audioTrack = optionalAudioTrack.get();
 
-        Genre genre = genreService.findByName(genreName);
-        Artist artist = artistService.findByName(artistName);
-        Album album = albumService.findByTitle(albumTitle);
+            Genre genre = genreService.findByName(audioTrackDTO.getGenreName());
+            Artist artist = artistService.findByArtistName(audioTrackDTO.getName());
+            Album album = albumService.findByTitle(audioTrackDTO.getAlbumTitle());
 
-        audioTrackService.updateAudioTrack(id, title, genre, artist, album, price);
+            audioTrack.setTitle(audioTrackDTO.getTitle());
+            audioTrack.setGenre(genre);
+            audioTrack.setArtist(artist);
+            audioTrack.setAlbum(album);
+            audioTrack.setPrice(audioTrackDTO.getPrice());
 
-        return "redirect:/track";
+            audioTrackService.updateAudioTrack(audioTrack, artist, genre);
+
+
+            return "redirect:/track";
+        } else {
+            return "redirect:/track?error=notfound";
+        }
     }
 
-
+    /**
+     * Удаляет аудиотрек по его ID.
+     *
+     * @param audioTrackId ID трека для удаления
+     * @return перенаправление на страницу с треками
+     */
     @PostMapping("/track/deleteAudioTrack/{id}")
     public String deleteAudioTrack(@PathVariable("id") int audioTrackId) {
         audioTrackService.deleteAudioTrack(audioTrackId);
