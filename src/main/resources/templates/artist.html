@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artist</title>
+    <title th:text="#{artist.list.title}">Artist</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -66,28 +66,32 @@
         ParamPamMusic
     </a>
     <div class="actions">
-        <a th:href="@{/cart}">Корзина</a> | <a th:href="@{/profile}">Профиль</a> | <a th:href="@{/logout}">Выйти</a>
+        <a th:href="@{/cart}">Корзина</a> |
+        <a th:href="@{/profile}">Профиль</a> |
+        <a th:href="@{/logout}">Выйти</a> |
+        <a href="?lang=en" style="color: blue">English</a> |
+        <a href="?lang=ru" style="color: blue">Русский</a>
     </div>
 </div>
 
 <div class="center">
-    <h2 style="color: white">Список артистов</h2>
+    <h2 th:text="#{artist.list.title}" style="color: white" >Artist List</h2>
     <div id="artistList">
         <div th:each="artist : ${artist}">
-            <p th:text="${artist.name}"></p>
+            <p th:text="${artist.getName}"></p>
 
             <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
 
                 <form th:action="@{/artist/updateArtist/{id}(id=${artist.id})}" method="post">
-                    <input type="hidden" name="artist.id" th:value="${artist.name}"/>
+                    <input type="hidden" name="artist.id" th:value="${artist.getName}"/>
                     <label>
                         <input type="text" name="name" placeholder="Имя"/>
                     </label>
-                    <button type="submit">Редактировать</button>
+                    <button type="submit" th:text="#{edit.artist}">Редактировать</button>
                 </form>
 
                 <form th:action="@{/artist/deleteArtist/{id}(id=${artist.id})}" method="post">
-                    <button type="submit">Удалить</button>
+                    <button type="submit" th:text="#{delete.artist}">Удалить</button>
                 </form>
 
 
@@ -100,12 +104,12 @@
             <label>
                 <input type="text" name="name" placeholder="Имя артиста" required>
             </label>
-            <button type="submit">Добавить нового артиста</button>
+            <button type="submit" th:text="#{add.artist}">Добавить нового артиста</button>
         </form>
     </div>
 </div>
 
-<div class="footer">
+<div th:text="#{footer.contacts}" class="footer" >
     Контакты: Иваныч, +375(29)123-45-67, example@mail.ru
 </div>
 </body>

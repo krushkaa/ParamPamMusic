@@ -12,12 +12,14 @@
             height: 100vh;
             background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/img/music.jpg') no-repeat center center fixed;
             background-size: cover;
+
             .content {
                 text-align: center;
                 background-color: #026841;
                 padding: 30px;
                 border-radius: 10px;
             }
+
             h1 {
                 font-family: 'Arial', sans-serif;
                 font-size: 48px;
@@ -25,11 +27,17 @@
         }
     </style>
 </head>
+
 <body>
 <div class="content">
     <h1 style="color: white">ParamPamMusic</h1>
     <a href="/custom-login" class="btn btn-primary btn-lg">Войти</a>
     <a href="/registrationForm" class="btn btn-secondary btn-lg">Зарегистрироваться</a>
+    <p></p>
+    <a href="?lang=en" style="color: blue">English</a> | <a href="?lang=ru" style="color: blue">Русский</a>
 </div>
 </body>
 </html>
+
+<!--       th:text="#{login}"-->
+<!--       th:text="#{registration.title}"-->
