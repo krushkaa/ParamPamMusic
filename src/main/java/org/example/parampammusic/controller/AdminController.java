@@ -1,7 +1,10 @@
 package org.example.parampammusic.controller;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.parampammusic.entity.User;
 import org.example.parampammusic.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +19,7 @@ import java.util.List;
 
 @Controller
 public class AdminController {
-
+    private static final Logger logger = LogManager.getLogger(AdminController.class);
     private final UserService userService;
     /**
      * Конструктор, инициализирующий AdminController с UserService.
@@ -40,6 +43,7 @@ public class AdminController {
 
         List<User> userList = userService.getAllUsers();
         model.addAttribute("users", userList);
+        logger.info("Профильная страница отображена для пользователя с ID: {}", user.getId());
         return "profile";
     }
 
@@ -53,7 +57,12 @@ public class AdminController {
      */
     @PostMapping("/profile/updateUser")
     public String updateUser(@RequestParam Integer userId, @RequestParam String email, @RequestParam String telNumber) {
-        userService.updateUser(userId, email, telNumber);
+        try {
+            userService.updateUser(userId, email, telNumber);
+            logger.info("Информация о пользователе с ID {} успешно обновлена. Новый email: {}, новый номер телефона: {}", userId, email, telNumber);
+        } catch (Exception e) {
+            logger.error("Ошибка при обновлении пользователя с ID {}: {}", userId, e.getMessage());
+        }
         return "redirect:/profile";
     }
 
@@ -66,7 +75,12 @@ public class AdminController {
      */
     @PostMapping("/profile/addPoint")
     public String addPoint(@RequestParam Integer userId, @RequestParam int bonusPoints) {
-        userService.addBonusPoints(userId, bonusPoints);
+        try {
+            userService.addBonusPoints(userId, bonusPoints);
+            logger.info("Добавлено {} бонусных баллов пользователю с ID {}", bonusPoints, userId);
+        } catch (Exception e) {
+            logger.error("Ошибка при добавлении бонусных баллов пользователю с ID {}: {}", userId, e.getMessage());
+        }
         return "redirect:/profile";
     }
 
@@ -78,7 +92,16 @@ public class AdminController {
      */
     @PostMapping("/profile/deleteUser")
     public String deleteUser(@RequestParam Integer userId) {
-        userService.deleteUser(userId);
+        try {
+            userService.deleteUser(userId);
+            logger.info("Пользователь с ID {} был успешно удален", userId);
+        } catch (Exception e) {
+            logger.error("Ошибка при удалении пользователя с ID {}: {}", userId, e.getMessage());
+        }
         return "redirect:/profile";
+    }
+    @GetMapping("/admin/someEndpoint")
+    public ResponseEntity<String> someEndpoint() {
+        return ResponseEntity.ok("Admin access granted.");
     }
 }

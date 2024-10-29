@@ -1,8 +1,9 @@
 package org.example.parampammusic.service;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.parampammusic.entity.Role;
 import org.example.parampammusic.repository.RoleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.Optional;
  */
 @Service
 public class RoleService {
+
+    private static final Logger logger = LogManager.getLogger(RoleService.class);
 
     private final RoleRepository roleRepository;
 
@@ -32,7 +35,14 @@ public class RoleService {
      * @return объект роли, если найден, иначе пустой Optional
      */
     public Optional<Role> getRoleById(int roleId) {
-        return roleRepository.findById(roleId);
+        logger.info("Запрос на получение роли по id: {}", roleId);
+        Optional<Role> role = roleRepository.findById(roleId);
+        if (role.isPresent()) {
+            logger.info("Роль с id {} найдена: {}", roleId, role.get().getRoleName());
+        } else {
+            logger.warn("Роль с id {} не найдена", roleId);
+        }
+        return role;
     }
 
     /**
@@ -41,7 +51,10 @@ public class RoleService {
      * @return список всех ролей
      */
     public List<Role> getAllRoles() {
-        return roleRepository.findAll();
+        logger.info("Запрос на получение всех ролей");
+        List<Role> roles = roleRepository.findAll();
+        logger.info("Найдено {} ролей", roles.size());
+        return roles;
     }
 
     /**
@@ -50,6 +63,12 @@ public class RoleService {
      * @param id идентификатор роли для удаления
      */
     public void deleteRole(int id) {
-        roleRepository.deleteById(id);
+        logger.info("Запрос на удаление роли с id: {}", id);
+        if (roleRepository.existsById(id)) {
+            roleRepository.deleteById(id);
+            logger.info("Роль с id {} успешно удалена", id);
+        } else {
+            logger.warn("Роль с id {} не найдена для удаления", id);
+        }
     }
 }

@@ -14,16 +14,21 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
+            margin-top: 80px;
         }
 
         .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px;
             border: 2px solid black;
             background-color: lightblue;
-            width: 100%;
+            z-index: 1000;
         }
 
         .logo {
@@ -70,13 +75,19 @@
     </div>
 </div>
 <div style="color: white">
-<h2>Купленные треки:</h2>
-<ul>
-    <li th:each="audioTrack : ${user.purchasedTracks}">
-        <span th:text="${audioTrack.title}"></span> - <span th:text="${audioTrack.artist}"></span>
-    </li>
-</ul>
+    <h1>Купленные треки</h1>
+    <div th:if="${purchasedTracks == null || purchasedTracks.isEmpty()}">
+        <p>Пока в вашей медиатеке пусто. Вы ещё не приобрели наши треки.</p>
+    </div>
+    <div th:unless="${purchasedTracks == null || purchasedTracks.isEmpty()}">
+        <ul>
+            <li th:each="orderItem : ${purchasedTracks}">
+                <span th:text="${orderItem.audioTrack.title}"></span> - <span th:text="${orderItem.audioTrack.artist.name}"></span>
+            </li>
+        </ul>
+    </div>
 </div>
+
 <div class="footer">
     Контакты: Иваныч, +375(29)123-45-67, example@mail.ru
 </div>

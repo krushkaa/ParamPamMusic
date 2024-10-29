@@ -27,25 +27,25 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <h1 class="text-center">Регистрация</h1>
+            <h1 class="text-center" th:text="#{registration.title}">Регистрация</h1>
             <form th:action="@{/registration}" th:object="${user}" method="POST" onsubmit="return validateform()">
                 <div class="form-group">
-                    <label for="login">Username</label>
+                    <label for="login" th:text="#{login.label}">Username</label>
                     <input type="text" id="login" class="form-control" th:field="*{login}" required/>
                 </div>
                 <div class="form-group">
-                    <label for="password">Password</label>
+                    <label for="password" th:text="#{password.label}">Password</label>
                     <input type="password" id="password" class="form-control" th:field="*{password}" required/>
                 </div>
                 <div class="form-group">
-                    <label for="email">Email</label>
+                    <label for="email" th:text="#{email.label}">Email</label>
                     <input type="email" id="email" class="form-control" th:field="*{email}" required/>
                 </div>
                 <div class="form-group">
-                    <label for="telNumber">Phone Number</label>
+                    <label for="telNumber" th:text="#{phone.label}">Phone Number</label>
                     <input type="text" id="telNumber" class="form-control" th:field="*{telNumber}" required/>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Register</button>
+                <button type="submit" class="btn btn-primary btn-block" th:text="#{register.button}">Register</button>
             </form>
 
             <div th:if="${successMessage}" class="alert alert-success mt-3">
@@ -58,4 +58,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+<!--<div>-->
+<!--    <a href="?lang=en" style="color: blue">English</a> | <a href="?lang=ru" style="color: blue">Русский</a>-->
+<!--</div>-->
 </html>

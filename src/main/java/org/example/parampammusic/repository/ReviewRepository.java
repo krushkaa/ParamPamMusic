@@ -19,4 +19,5 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
      * @return список отзывов, связанных с указанным аудиотреком
      */
     List<Review> findByAudioTrackId(int audioTrackId);
+    void deleteByUserId(Integer userId);
 }

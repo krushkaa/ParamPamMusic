@@ -14,16 +14,21 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
+            margin-top: 80px;
         }
 
         .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px;
             border: 2px solid black;
             background-color: lightblue;
-            width: 100%;
+            z-index: 1000;
         }
 
         .logo {
@@ -69,19 +74,17 @@
         <a th:href="@{/cart}">Корзина</a> |
         <a th:href="@{/profile}">Профиль</a> |
         <a th:href="@{/logout}">Выйти</a> |
-        <a href="?lang=en" style="color: blue">English</a> |
-        <a href="?lang=ru" style="color: blue">Русский</a>
+        <a th:href="@{/?lang='en'}" style="color: blue">English</a> |
+        <a th:href="@{/?lang='ru'}" style="color: blue">Русский</a>
     </div>
 </div>
 
 <div class="center">
-    <h2 th:text="#{artist.list.title}" style="color: white" >Artist List</h2>
+    <h2 th:text="#{artist.list.title}" style="color: white">Artist List</h2>
     <div id="artistList">
         <div th:each="artist : ${artist}">
             <p th:text="${artist.getName}"></p>
-
             <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
-
                 <form th:action="@{/artist/updateArtist/{id}(id=${artist.id})}" method="post">
                     <input type="hidden" name="artist.id" th:value="${artist.getName}"/>
                     <label>
@@ -89,12 +92,9 @@
                     </label>
                     <button type="submit" th:text="#{edit.artist}">Редактировать</button>
                 </form>
-
                 <form th:action="@{/artist/deleteArtist/{id}(id=${artist.id})}" method="post">
                     <button type="submit" th:text="#{delete.artist}">Удалить</button>
                 </form>
-
-
             </div>
         </div>
     </div>
@@ -109,7 +109,7 @@
     </div>
 </div>
 
-<div th:text="#{footer.contacts}" class="footer" >
+<div th:text="#{footer.contacts}" class="footer">
     Контакты: Иваныч, +375(29)123-45-67, example@mail.ru
 </div>
 </body>

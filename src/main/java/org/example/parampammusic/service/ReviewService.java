@@ -1,5 +1,7 @@
 package org.example.parampammusic.service;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.parampammusic.entity.Review;
 import org.example.parampammusic.repository.ReviewRepository;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,9 @@ import java.util.List;
  */
 @Service
 public class ReviewService {
+
+    private static final Logger logger = LogManager.getLogger(ReviewService.class);
+
     private final ReviewRepository reviewRepository;
 
     /**

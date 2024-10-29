@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.parampammusic.entity.*;
+import org.example.parampammusic.repository.ReviewRepository;
 import org.example.parampammusic.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,8 +15,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Сервис для управления пользователями и их аутентификацией.
@@ -28,6 +33,7 @@ public class UserService implements UserDetailsService {
     private static final Logger logger = LogManager.getLogger(UserService.class);
 
     private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
     private final RoleService roleService;
     private final OrderService orderService;
     private final PasswordEncoder passwordEncoder;
@@ -41,10 +47,12 @@ public class UserService implements UserDetailsService {
      * @param passwordEncoder кодировщик паролей
      */
     public UserService(UserRepository userRepository,
+                       ReviewRepository reviewRepository,
                        RoleService roleService,
                        OrderService orderService,
                        PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.reviewRepository = reviewRepository;
         this.roleService = roleService;
         this.orderService = orderService;
         this.passwordEncoder = passwordEncoder;
@@ -66,23 +74,22 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-//    /**
-//     * Аутентифицирует пользователя по логину и паролю.
-//     *
-//     * @param login       логин пользователя.
-//     * @param rawPassword исходный пароль.
-//     * @param session     сессия для сохранения информации о пользователе.
-//     * @return true, если аутентификация прошла успешно, иначе false.
-//     */
-//    public boolean authenticate(String login, String rawPassword, HttpSession session) {
-//        User user = userRepository.findByLogin(login);
-//        if (user != null && passwordEncoder.matches(rawPassword, user.getPassword())) {
-//            session.setAttribute("login", user.getLogin());
-//            return true;
-//        }
-//        return false;
-//    }
-
+    /**
+     * Аутентифицирует пользователя по логину и паролю.
+     *
+     * @param login       логин пользователя.
+     * @param rawPassword исходный пароль.
+     * @param session     сессия для сохранения информации о пользователе.
+     * @return true, если аутентификация прошла успешно, иначе false.
+     */
+    public boolean authenticate(String login, String rawPassword, HttpSession session) {
+        User user = userRepository.findByLogin(login);
+        if (user != null && passwordEncoder.matches(rawPassword, user.getPassword())) {
+            session.setAttribute("login", user.getLogin());
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Загружает пользователя по его логину для аутентификации.
@@ -102,7 +109,7 @@ public class UserService implements UserDetailsService {
                     user.getPassword(),
                     Collections.singleton(new SimpleGrantedAuthority(user.getRole().getRoleName())));
         } else {
-            logger.info("User found: {}", user.getLogin());
+            logger.info("User not found with login: {}", login);
             throw new UsernameNotFoundException("Cannot find user with login=" + login);
         }
     }
@@ -175,29 +182,6 @@ public class UserService implements UserDetailsService {
     }
 
     /**
-     * Возвращает список купленных пользователем треков.
-     *
-     * @param user пользователь, для которого ищутся купленные треки.
-     * @return список купленных треков.
-     */
-    public List<AudioTrack> getPurchasedTracksForUser(User user) {
-        if (user != null) {
-            List<Order> orders = user.getOrders();
-            List<AudioTrack> purchasedTracks = new ArrayList<>();
-            for (Order order : orders) {
-                if (order.getStatus() == OrderStatus.COMPLETED) {
-                    List<? extends AudioTrack> audioTracks = order.getOrderItems().stream()
-                            .map(OrderItem::getAudioTrack)
-                            .toList();
-                    purchasedTracks.addAll(audioTracks);
-                }
-            }
-            return purchasedTracks;
-        }
-        return Collections.emptyList();
-    }
-
-    /**
      * Обновляет email и телефонный номер пользователя.
      *
      * @param userId    идентификатор пользователя.
@@ -232,7 +216,9 @@ public class UserService implements UserDetailsService {
      *
      * @param userId идентификатор удаляемого пользователя.
      */
+    @Transactional
     public void deleteUser(Integer userId) {
+        reviewRepository.deleteByUserId(userId);
         userRepository.deleteById(userId);
     }
 }

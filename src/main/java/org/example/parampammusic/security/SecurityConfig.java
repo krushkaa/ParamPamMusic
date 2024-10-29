@@ -13,13 +13,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect;
-
-import java.util.Locale;
 
 /**
  * Конфигурация безопасности приложения.
@@ -40,7 +34,7 @@ public class SecurityConfig {
      */
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        logger.info("Configuring security settings...");
+        logger.info("Конфигурация настроек безопасности...");
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
@@ -48,7 +42,7 @@ public class SecurityConfig {
                         .requestMatchers("/user/**").hasRole("USER")
                         .requestMatchers("/album/**", "/track/**", "/artist/**", "/profile/**", "/cart/**", "/review/**", "/myTrack/**")
                                         .hasAnyRole("ADMIN","USER")
-                        .requestMatchers("/", "/registration", "/registrationForm","/custom-login", "/logout")
+                        .requestMatchers("/", "/registration", "/registrationForm","/custom-login", "/logout", "/welcomePage/**")
                                         .permitAll()
                         .requestMatchers("/resources/**","/img/**","/css/**")
                                         .permitAll()
@@ -69,11 +63,16 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
                         .permitAll()
+                        .addLogoutHandler((request, response, authentication) -> {
+                            if (authentication != null) {
+                                logger.info("Пользователь {} вышел из системы.", authentication.getName());
+                            }
+                        })
                 )
                 .sessionManagement(session -> session
                         .sessionFixation().newSession()
                 );
-        logger.info("Security settings configured successfully.");
+        logger.info("Конфигурация настроек безопасности успешно завершена.");
 
         return httpSecurity.build();
     }
@@ -87,6 +86,7 @@ public class SecurityConfig {
      */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        logger.info("Настройка менеджера аутентификации...");
         return authenticationConfiguration.getAuthenticationManager();
     }
 
@@ -97,6 +97,7 @@ public class SecurityConfig {
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
+        logger.info("Инициализация кодировщика паролей...");
         return new BCryptPasswordEncoder();
     }
 
@@ -107,8 +108,7 @@ public class SecurityConfig {
      */
     @Bean
     public SpringSecurityDialect springSecurityDialect(){
+        logger.info("Инициализация SpringSecurityDialect для шаблонов...");
         return new SpringSecurityDialect();
     }
 }
-
-

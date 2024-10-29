@@ -21,6 +21,6 @@ public class ParamPamMusicApplication {
      */
     public static void main(String[] args) {
         SpringApplication.run(ParamPamMusicApplication.class, args);
-        logger.info("Приложение успешно запущено");
+        logger.info("Приложение успешно запущено.");
     }
 }

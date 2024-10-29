@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Album</title>
+    <title>Cart</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,16 +14,38 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
+            margin-top: 80px;
         }
 
         .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px;
             border: 2px solid black;
             background-color: lightblue;
-            width: 100%;
+            z-index: 1000;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .total {
+            text-align: right;
+            font-size: 1.5em;
+            margin-top: 20px;
         }
 
         .logo {
@@ -33,7 +55,12 @@
         }
 
         .actions {
+            text-align: right;
             font-size: 25px;
+        }
+
+        .actions form {
+            display: inline;
         }
 
         .center div {
@@ -69,30 +96,59 @@
         <a th:href="@{/cart}">Корзина</a> | <a th:href="@{/profile}">Профиль</a> | <a th:href="@{/logout}">Выйти</a>
     </div>
 </div>
-<h1>Корзина</h1>
-<table>
-    <tr>
-        <th>Трек</th>
-        <th>Цена</th>
-        <th>Действие</th>
-    </tr>
-    <tr th:each="item : ${orderItems}">
-        <td th:text="${item.audioTrack.title}"></td>
-        <td th:text="${item.price}"></td>
-        <td>
-            <form th:action="@{/cart/removeFromCart}" method="post">
-                <input type="hidden" name="audioTrackId" th:value="${item.audioTrack.id}" />
-                <button type="submit">Удалить</button>
-            </form>
-        </td>
-    </tr>
-</table>
-<p>Общая стоимость: <span th:text="${totalPrice}"></span></p>
-<form th:action="@{/cart/checkout}" method="post">
-    <button type="submit">Оформить заказ</button>
-</form>
-<div class="footer">
-    Контакты: Иваныч, +375(29)123-45-67, example@mail.ru
+<div style="color: white">
+    <h1>Корзина</h1>
+
+    <div th:if="${message}">
+        <p th:text="${message}" style="color: red;"></p>
+    </div>
+    <div th:if="${orderItems.isEmpty()}">
+        <p>Ваша корзина пуста.</p>
+        <p>Если у Вас возникли проблемы с покупкой, свяжитесь с нами по контактам внизу страницы.</p>
+    </div>
+
+    <div th:unless="${orderItems.isEmpty()}">
+
+        <p>Количество элементов в корзине: <span th:text="${#lists.size(orderItems)}">0</span></p>
+
+        <div th:unless="${orderItems.isEmpty()}">
+
+            <div th:each="orderItem : ${orderItems}" class="cart-item">
+                <div>
+                    <span th:text="${orderItem.audioTrack.title}">Название трека</span> —
+                    <span th:text="${orderItem.audioTrack.artist.name}">Исполнитель</span>
+                </div>
+                <div>
+                    <span th:text="${orderItem.price}">Цена</span> руб.
+                    <form th:action="@{/cart/removeFromCart}" method="post" style="display:inline;">
+                        <input type="hidden" name="audioTrackId" th:value="${orderItem.audioTrack.id}"/>
+                        <button type="submit">Удалить</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="total">
+                Общая сумма: <span th:text="${totalPrice}">0</span> руб.
+            </div>
+
+            <div class="actions">
+                <form th:action="@{/cart/checkout}" method="post">
+                    <button type="submit">Оформить заказ</button>
+                </form>
+            </div>
+        </div>
+
+        <div th:if="${orderItems.isEmpty()}">
+            <p>Ваша корзина пуста.</p>
+            <p>Если у Вас возникли проблемы с покупкой, свяжитесь с нами по контактам внизу страницы.</p>
+        </div>
+    </div>
 </div>
+
+
+    <div class="footer">
+        Контакты: Иваныч, +375(29)123-45-67, example@mail.ru
+    </div>
 </body>
 </html>
+

@@ -6,6 +6,8 @@ import org.example.parampammusic.entity.User;
 import org.example.parampammusic.service.AudioTrackService;
 import org.example.parampammusic.service.ReviewService;
 import org.example.parampammusic.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,8 @@ import java.util.Optional;
  */
 @Controller
 public class ReviewController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ReviewController.class);
 
     private final ReviewService reviewService;
     private final UserService userService;
@@ -46,6 +50,8 @@ public class ReviewController {
      */
     @GetMapping("/review/{audioTrackId}")
     public String getReviews(@PathVariable int audioTrackId, Model model) {
+        logger.info("Получение отзывов для аудиотрека {}", audioTrackId);
+
         List<Review> reviews = reviewService.getReviewsForTrack(audioTrackId);
         model.addAttribute("reviews", reviews);
         model.addAttribute("audioTrackId", audioTrackId);
@@ -63,6 +69,7 @@ public class ReviewController {
     @PostMapping("/review/add")
     public String addReview(@ModelAttribute Review review, @RequestParam int audioTrackId, Principal principal) {
         User currentUser = userService.findByLogin(principal.getName());
+        logger.info("Авторизованный пользователь {}", currentUser.getLogin());
 
         Optional<AudioTrack> audioTrackOptional = audioTrackService.getAudioTrackById(audioTrackId);
         if (audioTrackOptional.isPresent()) {
@@ -70,8 +77,10 @@ public class ReviewController {
             review.setUser(currentUser);
             review.setAudioTrack(audioTrack);
             reviewService.addReview(review);
+            logger.info("Добавлени отзыв для аудиотрека {}", audioTrackId);
             return "redirect:/track";
         } else {
+            logger.warn("Не найден аудиотрек с ID {}", audioTrackId);
             return "redirect:/error";
         }
     }
@@ -85,12 +94,15 @@ public class ReviewController {
      */
     @GetMapping("reviewList")
     public String showReview(@RequestParam(name = "audioTrackId") int audioTrackId, Model model) {
+        logger.info("Отображен список отзывов для трека {}", audioTrackId);
+
         List<Review> reviews = reviewService.getReviewsForTrack(audioTrackId);
 
         model.addAttribute("reviews", reviews);
         model.addAttribute("audioTrackId", audioTrackId);
         model.addAttribute("trackName", AudioTrackService.getTrackNameByAudioTrackId(audioTrackId));
 
+        logger.debug("Получены отзывы для аудиотрека {}: {}", audioTrackId, reviews);
         return "redirect:/review/reviewList";
     }
 }

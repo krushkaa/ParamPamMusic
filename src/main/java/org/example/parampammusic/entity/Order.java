@@ -49,8 +49,8 @@ public class Order {
     /**
      * Позиции, входящие в заказ.
      */
-    @OneToMany(mappedBy = "order")
-    private List<OrderItem> orderItems;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     /**
      * Статус заказа.

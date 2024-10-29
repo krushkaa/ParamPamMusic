@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
+
 /**
  * Представляет сущность аудиотрека.
  * Содержит информацию о заголовке, артисте, жанре, альбоме и цене.
@@ -12,7 +12,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
 @Entity
 @Table(name = "audio_track")
 public class AudioTrack {
@@ -33,15 +32,15 @@ public class AudioTrack {
     /**
      * Исполнитель, которому принадлежит аудиотрек.
      */
-    @OneToOne(cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "artist_id", nullable = false)
     private Artist artist;
 
     /**
      * Жанр аудиотрека.
      */
-    @OneToOne(cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
+    @ManyToOne(cascade = {CascadeType.MERGE})
+    @JoinColumn(name = "genre_id", nullable = false)
     private Genre genre;
 
     /**

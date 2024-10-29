@@ -14,16 +14,21 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
+            margin-top: 300px;
         }
 
         .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px;
             border: 2px solid black;
             background-color: lightblue;
-            width: 100%;
+            z-index: 1000;
         }
 
         .logo {
@@ -74,10 +79,10 @@
     <h2>Управление пользователями</h2>
     <table>
         <tr style="color: white" th:each="user : ${users}">
-            <td th:text="${user.login}"></td>
-            <td th:text="${user.email}"></td>
-            <td th:text="${user.telNumber}"></td>
-            <td th:text="${user.bonusPoint}"></td>
+            <td th:text="'Логин: ' + ${user.login}"></td>
+            <td th:text="'Почта: ' + ${user.email}"></td>
+            <td th:text="'Номер телефона: ' + ${user.telNumber}"></td>
+            <td th:text="'Бонусы: ' + ${user.bonusPoint}"></td>
             <td>
                 <form action="/profile/updateUser" method="post">
                     <input type="hidden" name="userId" th:value="${user.id}"/>

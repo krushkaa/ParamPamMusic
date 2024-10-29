@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 /**
  * Представляет позицию в заказе.
  * Позиция включает информацию о заказе, аудиотреке и цене.
@@ -12,7 +11,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
 @Entity
 @Table(name = "order_item")
 public class OrderItem {
@@ -45,4 +43,8 @@ public class OrderItem {
      */
     @Column(name = "price", nullable = false)
     private double price;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }

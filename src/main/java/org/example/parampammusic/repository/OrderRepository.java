@@ -1,13 +1,15 @@
 package org.example.parampammusic.repository;
 
 import org.example.parampammusic.entity.Order;
+import org.example.parampammusic.entity.OrderItem;
 import org.example.parampammusic.entity.OrderStatus;
 import org.example.parampammusic.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Репозиторий для работы с сущностью Order.
@@ -23,8 +25,9 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
      * @param status статус заказа
      * @return Optional, содержащий найденный заказ, если он существует
      */
-    Optional<Order> findByUserAndStatus(User user, OrderStatus status);
+    List<Order> findByUserAndStatus(User user, OrderStatus status);
 
-    List<Order> findByUserId(int userId);
+    @Query("SELECT oi FROM OrderItem oi WHERE oi.order.id = :orderId")
+    List<OrderItem> findOrderItemsByOrderId(@Param("orderId") int orderId);
 }
 
